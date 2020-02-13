@@ -1,18 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import styles from "../styles";
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Keyboard, KeyboardAvoidingView } from 'react-native';
 import { connect } from 'react-redux';
 
-const Observation = ({dispatch, navigation}) => {
+const Observation = ({dispatch, navigation, obs}) => {
+    const [text, setText] = useState(obs.text)
+    const [market, setMarket] = useState(obs.market)
+    let textInput = React.createRef();
 
     return (
-        <View style={styles.container}>
+            <KeyboardAvoidingView style={styles.container} behavior="height" enabled={true}> 
             <View>
                 <Text style={styles.observationText}>Alguma observação?</Text>
                 <View style={styles.observationInputContainer}>
                     <TextInput
                     style={styles.observationInput}
+                    value={text}
+                    onChangeText={(t) => setText(t)}
                     multiline={true}
                     numberOfLines={7}
                     ></TextInput>
@@ -26,17 +31,23 @@ const Observation = ({dispatch, navigation}) => {
                 </View>
                 <View style={styles.observationInputContainer}>
                     <TextInput
-                    style={styles.observationInput}
-                    multiline={true}
-                    numberOfLines={7}
+                    style={styles.observationInput2}
+                    ref={r => textInput = r}
+                    value={market}
+                    onChangeText={(t) => setMarket(t)}
                     ></TextInput>
                 </View>
             </View>    
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Conclusion')} >
+            <TouchableOpacity style={styles.button} onPress={() => {dispatch({
+                                                                        type: "UPDATE_OBS",
+                                                                        text,
+                                                                        market
+                                                                    })
+                navigation.navigate('Conclusion');}} >
                 <Text style={styles.buttonText} >Feito !</Text>
             </TouchableOpacity>
-        </View>
+            </KeyboardAvoidingView>
     )
 }
 
-export default connect()(Observation);
+export default connect(state => ({obs: state.obs}))(Observation);

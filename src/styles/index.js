@@ -7,7 +7,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#f2f2f2',
         flex: 1,
         justifyContent: 'space-between',
-        height: 60,
     },
     container: {
         backgroundColor: '#f2f2f2',
@@ -27,14 +26,16 @@ const styles = StyleSheet.create({
         
     },
     list: {
-        
+        flex: 1,
     },
     listContainer: {
-        marginTop: 2,
+        marginTop: 4,
         flexDirection: 'row',
         alignItems: 'center',
+        height: 40,
     },
     button: {
+        bottom: 0,
         height: 70,
         backgroundColor: '#bfff2c',
         alignItems: "center",
@@ -66,7 +67,8 @@ const styles = StyleSheet.create({
     },
     textInput: {
         width: "67%",
-        fontSize: 16,
+        marginRight: 5,
+        fontSize: 20,
         borderBottomColor: '#ddd',
         borderBottomWidth: 1,
         fontFamily: 'gotham-light',
@@ -74,7 +76,7 @@ const styles = StyleSheet.create({
     addItem: {
         alignSelf: 'center',
         marginTop: 5,
-        marginBottom: 30,
+        marginBottom: 50,
         color: '#444',
         fontWeight: 'bold',
         fontFamily: 'gotham-light',
@@ -118,6 +120,7 @@ const styles = StyleSheet.create({
         margin: 5,
     },
     adressInputTop: {
+        marginLeft: 3,
         fontSize: 20,      
         fontFamily: 'gotham-light', 
     },
@@ -143,9 +146,15 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     observationContainer: {
-        
+        marginLeft: '12%',
+        marginRight: '12%',
     },
     observationInput: {
+        fontSize: 16,   
+        fontFamily: 'gotham-light',
+    },
+    observationInput2: {
+        height: 135,
         fontSize: 16,   
         fontFamily: 'gotham-light',
     },

@@ -1,45 +1,91 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import styles from "../styles";
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
-import MapView, { Marker} from 'react-native-maps';
+import { View, Text, TouchableOpacity, TextInput, Keyboard } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
 import { connect } from 'react-redux';
 import { TextInputMask } from 'react-native-masked-text'
 
-const Delivery = ({dispatch, navigation}) => {
-    const [currentRegion, setCurrentRegion] = useState(null);
-    const [address, setAddress] = useState({});
-    const [cep, setCep] = useState("");
-    const [num, setNum] = useState("");
-    const [comp, setComp] = useState("");
-    const [end, setEnd] = useState("");
-    const [bairro, setBairro] = useState("");
-    const [tel, setTel] = useState("");
-    const [UF, setUF] = useState("");
-    const [cidade, setCidade] = useState("");
+const Delivery = ({dispatch, navigation, end}) => {
+    const [currentRegion, setCurrentRegion] = useState({
+                                                        latitude: -23.4118685,
+                                                        longitude: -51.9398904,
+                                                        latitudeDelta: 0.14,
+                                                        longitudeDelta: 0.14,
+                                                    });
+    const [markerPosition, setMarkerPosition] = useState({  latitude: end.loc.latitude,
+                                                            longitude: end.loc.longitude,
+                                                        })                                                
+    const [cep, setCep] = useState(end.cep);
+    const [num, setNum] = useState(end.num);
+    const [comp, setComp] = useState(end.comp);
+    const [logradouro, setLogradouro] = useState(end.logradouro);
+    const [bairro, setBairro] = useState(end.bairro);
+    const [tel, setTel] = useState(end.tel);
+    const [UF, setUF] = useState(end.UF);
+    const [cidade, setCidade] = useState(end.cidade);
+    const [nome, setNome] = useState(end.nome);
+    let textInputNum = React.createRef();
+    let textInputComp = React.createRef();
+    let textInputTel = React.createRef();
 
-    const onChange = e => {
-        if (e.length === 9) {
-          getData(e);
-        }
-        setCep(e)
-      };
+                                                        
+    function updateAdress() {
+        dispatch({type: "SET_ADRESS",
+                nome,
+                cep,
+                num,
+                comp,
+                logradouro,
+                bairro,
+                tel,
+                UF,
+                cidade,
+                markerPosition,
+            })
+    }
     
     const getData = async cep => {
     try {
         const result = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
         const jsonResult = await result.json();
-        console.log(jsonResult);
-        setAddress(jsonResult);
         setBairro(jsonResult.bairro)
-        setEnd(jsonResult.logradouro)
+        setLogradouro(jsonResult.logradouro)
         setUF(jsonResult.uf)
         setCidade(jsonResult.localidade)
-        console.log(address);
     } catch (error) {
         console.log({ error: error });
     }
     };
+
+    const setLocationcCEP = async (e) => {
+        const result = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${e}&key=AIzaSyCYvX21fckp6qrUXTkmZ5Ej594ckjy1EGA&callback=initMap`);
+        const jsonResult = await result.json();
+        setCurrentRegion({  latitude: jsonResult.results[0].geometry.location.lat,
+                            longitude: jsonResult.results[0].geometry.location.lng,
+                            latitudeDelta: 0.03,
+                            longitudeDelta: 0.03,
+                        })
+        setMarkerPosition({
+            latitude: jsonResult.results[0].geometry.location.lat,
+            longitude: jsonResult.results[0].geometry.location.lng,
+        })
+    }
+
+    const setLocationcNum = async () => {
+        const result = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${num}+${logradouro}&key=AIzaSyCYvX21fckp6qrUXTkmZ5Ej594ckjy1EGA&callback=initMap`);
+        const jsonResult = await result.json();
+        setCurrentRegion({  latitude: jsonResult.results[0].geometry.location.lat,
+                            longitude: jsonResult.results[0].geometry.location.lng,
+                            latitudeDelta: 0.01,
+                            longitudeDelta: 0.01,
+        })
+
+        setMarkerPosition({
+            latitude: jsonResult.results[0].geometry.location.lat,
+            longitude: jsonResult.results[0].geometry.location.lng,
+        })
+    }
 
     return (
         <View style={styles.backgroundContainer}>
@@ -50,9 +96,17 @@ const Delivery = ({dispatch, navigation}) => {
                         <View style={{...styles.adressInputContainer, width: '80%'}}>
                             <TextInputMask 
                                 style={styles.adressInputTop}
+                                autoFocus={true}
                                 type={'zip-code'}
+                                placeholder={"00000-000"}
                                 value={cep}
-                                onChangeText={e => onChange(e)}
+                                autoCompleteType={'postal-code'}
+                                onChangeText={e => { if (e.length === 9) {
+                                                setCep(e)
+                                                getData(e);
+                                                setLocationcCEP(e);
+                                                }; setCep(e) }}
+                                onSubmitEditing={() => textInputNum.focus()}
                             />
                         </View>
                     </View>
@@ -60,9 +114,17 @@ const Delivery = ({dispatch, navigation}) => {
                         <Text style={styles.adressText}>Nº: </Text>
                         <View style={{...styles.adressInputContainer, width: '40%'}}>
                             <TextInput 
-                            style={styles.adressInputTop}
-                            value={num}
-                            onChangeText={e => setNum(e)}
+                                ref={ r => textInputNum = r}
+                                style={styles.adressInputTop}
+                                value={num}
+                                keyboardType={"number-pad"}
+                                onChangeText={e => setNum(e)}
+                                onSubmitEditing={(e) => {
+                                    textInputComp.focus();
+                                    setLocationcNum(e);
+                                }}
+                                onlogradouroEditing={() => setLocationcNum()}
+
                             ></TextInput>
                         </View>
                     </View>
@@ -74,6 +136,8 @@ const Delivery = ({dispatch, navigation}) => {
                         style={styles.adressInput}
                         value={comp}
                         onChangeText={e => setComp(e)}
+                        ref={ r => textInputComp = r}
+                        onSubmitEditing={() => textInputTel.focus()}
                         ></TextInput>
                     </View>
                 </View>
@@ -85,8 +149,8 @@ const Delivery = ({dispatch, navigation}) => {
                     <View style={{...styles.adressInputContainer, width: '67%'}}>
                         <TextInput 
                         style={styles.adressInput}
-                        value={end}
-                        onChangeText={e => setEnd(e)}
+                        value={logradouro}
+                        onChangeText={e => setLogradouro(e)}
                         ></TextInput>
                     </View>
                 </View>
@@ -101,9 +165,20 @@ const Delivery = ({dispatch, navigation}) => {
                     </View>
                 </View>
                 <View style={{...styles.adress1}}>
+                    <Text style={styles.adressText}>Nome: </Text>
+                    <View style={{...styles.adressInputContainer, width: '80%'}}>
+                        <TextInput 
+                        style={styles.adressInput}
+                        value={nome}
+                        onChangeText={e => setNome(e)}
+                        ></TextInput>
+                    </View>
+                </View>
+                <View style={{...styles.adress1}}>
                     <Text style={styles.adressText}>Telefone: </Text>
                     <View style={{...styles.adressInputContainer, width: '67%'}}>
                         <TextInputMask
+                            refInput={(ref) => textInputTel = ref}
                             style={styles.adressInput}
                             type={'cel-phone'}
                             options={{
@@ -112,19 +187,25 @@ const Delivery = ({dispatch, navigation}) => {
                                 dddMask: '(99) '
                             }}
                             value={tel}
-                            onChangeText={text => setTel(text)}
+                            placeholder={'(44) 99999-5555'}
+                            autoCompleteType={'tel'}
+                            onChangeText={text => setTel(text) }
+                            onSubmitEditing={() => Keyboard.dismiss()}
                         />
                     </View>
                 </View>
             </View>
             <View style={styles.botContainer}>
                 <MapView 
-                    style={styles.map
-
-                }>
-
+                    style={styles.map}
+                    region={currentRegion} 
+                >
+                    <Marker 
+                        key={"1"}
+                        coordinate={markerPosition}
+                    />
                 </MapView>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Observation')} >
+                <TouchableOpacity style={styles.button} onPress={() => {updateAdress(); navigation.navigate('Observation')}} >
                     <Text style={styles.buttonText} >Feito !</Text>
                 </TouchableOpacity>
             </View>
@@ -132,4 +213,4 @@ const Delivery = ({dispatch, navigation}) => {
     )
 }
 
-export default connect()(Delivery);
+export default connect(state => ({end: state.end}))(Delivery);

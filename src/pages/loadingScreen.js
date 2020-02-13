@@ -11,7 +11,7 @@ export default class LoadingScreeen extends React.Component {
             'gotham-light': require('../assets/fonts/3.Gotham-Light.otf'),
         });
 
-        this.props.navigation.navigate('List');
+        this.props.navigation.replace('List');
     }
 
     render() {

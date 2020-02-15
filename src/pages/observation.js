@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import styles from "../styles";
-import { View, Text, TouchableOpacity, TextInput, Keyboard, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native';
 import { connect } from 'react-redux';
 
 const Observation = ({dispatch, navigation, obs}) => {
@@ -10,6 +10,7 @@ const Observation = ({dispatch, navigation, obs}) => {
     let textInput = React.createRef();
 
     return (
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <KeyboardAvoidingView style={styles.container} behavior="height" enabled={true}> 
             <View>
                 <Text style={styles.observationText}>Alguma observação?</Text>
@@ -43,10 +44,11 @@ const Observation = ({dispatch, navigation, obs}) => {
                                                                         text,
                                                                         market
                                                                     })
-                navigation.navigate('Conclusion');}} >
+                navigation.replace('Conclusion');}} >
                 <Text style={styles.buttonText} >Feito !</Text>
             </TouchableOpacity>
             </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     )
 }
 

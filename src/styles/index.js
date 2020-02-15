@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 import Constants from 'expo-constants';
 
 
@@ -26,7 +26,8 @@ const styles = StyleSheet.create({
         
     },
     list: {
-        flex: 1,
+        width: Dimensions.get('window').width,
+        borderWidth: 0,
     },
     listContainer: {
         marginTop: 4,
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
     addItem: {
         alignSelf: 'center',
         marginTop: 5,
-        marginBottom: 50,
+        marginBottom: 300,
         color: '#444',
         fontWeight: 'bold',
         fontFamily: 'gotham-light',

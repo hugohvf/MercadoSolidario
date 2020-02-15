@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import styles from "../styles";
-import { View, Text, TouchableOpacity, TextInput, Keyboard } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { connect } from 'react-redux';
 import { TextInputMask } from 'react-native-masked-text'
@@ -59,7 +59,7 @@ const Delivery = ({dispatch, navigation, end}) => {
     };
 
     const setLocationcCEP = async (e) => {
-        const result = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${e}&key=AIzaSyCYvX21fckp6qrUXTkmZ5Ej594ckjy1EGA&callback=initMap`);
+        const result = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${e}&key=AIzaSyAi9booFyLB2mFsIHKMcYNonudrSx4Fp-4&callback=initMap`); 
         const jsonResult = await result.json();
         setCurrentRegion({  latitude: jsonResult.results[0].geometry.location.lat,
                             longitude: jsonResult.results[0].geometry.location.lng,
@@ -73,8 +73,9 @@ const Delivery = ({dispatch, navigation, end}) => {
     }
 
     const setLocationcNum = async () => {
-        const result = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${num}+${logradouro}&key=AIzaSyCYvX21fckp6qrUXTkmZ5Ej594ckjy1EGA&callback=initMap`);
+        const result = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${num}+${logradouro}&key=AIzaSyAi9booFyLB2mFsIHKMcYNonudrSx4Fp-4&callback=initMap`);
         const jsonResult = await result.json();
+
         setCurrentRegion({  latitude: jsonResult.results[0].geometry.location.lat,
                             longitude: jsonResult.results[0].geometry.location.lng,
                             latitudeDelta: 0.01,
@@ -88,6 +89,7 @@ const Delivery = ({dispatch, navigation, end}) => {
     }
 
     return (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.backgroundContainer}>
             <View style={styles.adressTopContainer}>
                 <View style={styles.adress1}>
@@ -165,16 +167,6 @@ const Delivery = ({dispatch, navigation, end}) => {
                     </View>
                 </View>
                 <View style={{...styles.adress1}}>
-                    <Text style={styles.adressText}>Nome: </Text>
-                    <View style={{...styles.adressInputContainer, width: '80%'}}>
-                        <TextInput 
-                        style={styles.adressInput}
-                        value={nome}
-                        onChangeText={e => setNome(e)}
-                        ></TextInput>
-                    </View>
-                </View>
-                <View style={{...styles.adress1}}>
                     <Text style={styles.adressText}>Telefone: </Text>
                     <View style={{...styles.adressInputContainer, width: '67%'}}>
                         <TextInputMask
@@ -190,10 +182,22 @@ const Delivery = ({dispatch, navigation, end}) => {
                             placeholder={'(44) 99999-5555'}
                             autoCompleteType={'tel'}
                             onChangeText={text => setTel(text) }
+                            keyboardType={"decimal-pad"}
                             onSubmitEditing={() => Keyboard.dismiss()}
                         />
                     </View>
                 </View>
+                <View style={{...styles.adress1}}>
+                    <Text style={styles.adressText}>Nome: </Text>
+                    <View style={{...styles.adressInputContainer, width: '80%'}}>
+                        <TextInput 
+                        style={styles.adressInput}
+                        value={nome}
+                        onChangeText={e => setNome(e)}
+                        ></TextInput>
+                    </View>
+                </View>
+                
             </View>
             <View style={styles.botContainer}>
                 <MapView 
@@ -210,6 +214,7 @@ const Delivery = ({dispatch, navigation, end}) => {
                 </TouchableOpacity>
             </View>
         </View>
+    </TouchableWithoutFeedback>
     )
 }
 

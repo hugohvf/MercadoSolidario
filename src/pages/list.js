@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
-import { View, Text, FlatList, TouchableOpacity, TextInput, KeyboardAvoidingView, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, TextInput, SafeAreaView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import styles from "../styles";
 import { useSelector, useDispatch, connect } from 'react-redux';
 import { AntDesign } from '@expo/vector-icons';
 
 const List = ({navigation, dispatch, lista}) => {
     let nextItem = React.createRef();
+    let flatlist = React.createRef();
 
     function addItem() {
         dispatch({
@@ -18,6 +19,7 @@ const List = ({navigation, dispatch, lista}) => {
             },
         });
     }
+
 
     const renderItem = ({item, index}) => {
         return (
@@ -53,8 +55,8 @@ const List = ({navigation, dispatch, lista}) => {
     };
 
     return (
-        <KeyboardAvoidingView style={styles.backgroundContainer} behavior={Platform.OS === "ios" ? "padding" : "padding"} > 
-            <ScrollView >
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <SafeAreaView style={{flex: 1}}>
                 <FlatList
                 style={styles.flatlist}
                 contentContainerStyle={styles.list}
@@ -63,19 +65,21 @@ const List = ({navigation, dispatch, lista}) => {
                 renderItem={renderItem}
                 enableSnap={true}
                 ItemSeparatorComponent={() => <View style={styles.separator}></View>}
+                ref={ref => flatlist = ref}
                 ListFooterComponent={
                 <TouchableOpacity onPress={() => addItem()}>
                     <Text style={styles.addItem}>Adicionar Item</Text>
                 </TouchableOpacity>
                 }
                 />
-            </ScrollView>
+            
             <View >
                 <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Delivery')} >
                     <Text style={styles.buttonText} >Feito !</Text>
                 </TouchableOpacity>
             </View>   
-        </KeyboardAvoidingView>
+            </SafeAreaView>
+        </TouchableWithoutFeedback>
     );
 }
 

@@ -10,7 +10,7 @@ const Conclusion = ({dispatch, order}) => {
 
     useEffect(() => {
         getDate();
-        sendOrder();
+        setTimeout(() => sendOrder(), 1000);
     }, []);
 
     async function sendOrder(data) {
@@ -23,7 +23,7 @@ const Conclusion = ({dispatch, order}) => {
 
         let response = await api.get('/date')
 
-        dispatch({type: "SET_DATE", data: response.data[1], dataEntrega: response.data[0]})
+        await dispatch({type: "SET_DATE", data: response.data[1], dataEntrega: response.data[0]})
     }
 
     return (

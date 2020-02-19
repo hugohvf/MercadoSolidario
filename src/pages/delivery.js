@@ -28,6 +28,7 @@ const Delivery = ({dispatch, navigation, end}) => {
     let textInputNum = React.createRef();
     let textInputComp = React.createRef();
     let textInputTel = React.createRef();
+    let textInputNome = React.createRef();
 
                                                         
     function updateAdress() {
@@ -183,7 +184,7 @@ const Delivery = ({dispatch, navigation, end}) => {
                             autoCompleteType={'tel'}
                             onChangeText={text => setTel(text) }
                             keyboardType={"decimal-pad"}
-                            onSubmitEditing={() => Keyboard.dismiss()}
+                            onSubmitEditing={() => textInputNome.focus()}
                         />
                     </View>
                 </View>
@@ -194,6 +195,8 @@ const Delivery = ({dispatch, navigation, end}) => {
                         style={styles.adressInput}
                         value={nome}
                         onChangeText={e => setNome(e)}
+                        ref={r => textInputNome = r}
+                        onSubmitEditing={() => Keyboard.dismiss()}
                         ></TextInput>
                     </View>
                 </View>

@@ -9,22 +9,36 @@ const Conclusion = ({dispatch, order}) => {
 
 
     useEffect(() => {
-        getDate();
-        setTimeout(() => sendOrder(), 1000);
+        
+        getDate().then(res => sendOrder({...order, data: res[1], dataEntrega: res[0]}))
     }, []);
 
     async function sendOrder(data) {
 
-        let response = await api.post('/order', order)    
+        let response = await api.post('/order', data)    
 
       }
 
+    
+
     async function getDate() {
-
-        let response = await api.get('/date')
-
-        await dispatch({type: "SET_DATE", data: response.data[1], dataEntrega: response.data[0]})
+        
+        try {
+            let res = await api.get('/date')
+            await dispatch({type: "SET_DATE", data: res.data[1], dataEntrega: res.data[0]})
+             if(res.status == 200){
+                 
+                 console.log(res.status)
+             }    
+                
+             return res.data
+         }
+         catch (err) {
+             console.error(err);
+         }
     }
+        
+    
 
     return (
         <View style={styles.container2}>

@@ -29,6 +29,7 @@ const Delivery = ({dispatch, navigation, end}) => {
     let textInputComp = React.createRef();
     let textInputTel = React.createRef();
     let textInputNome = React.createRef();
+    let textInputCep = React.createRef();
 
                                                         
     function updateAdress() {
@@ -93,13 +94,47 @@ const Delivery = ({dispatch, navigation, end}) => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.backgroundContainer}>
             <View style={styles.adressTopContainer}>
+            <View style={{...styles.adress1}}>
+                    <Text style={styles.adressText}>Nome: </Text>
+                    <View style={{...styles.adressInputContainer, width: '80%'}}>
+                        <TextInput 
+                        style={styles.adressInput}
+                        value={nome}
+                        autoFocus={true}
+                        onChangeText={e => setNome(e)}
+                        ref={r => textInputNome = r}
+                        onSubmitEditing={() => textInputTel.focus()}
+                        ></TextInput>
+                    </View>
+                </View>
+                <View style={{...styles.adress1}}>
+                    <Text style={styles.adressText}>Telefone: </Text>
+                    <View style={{...styles.adressInputContainer, width: '67%'}}>
+                        <TextInputMask
+                            refInput={(ref) => textInputTel = ref}
+                            style={styles.adressInput}
+                            type={'cel-phone'}
+                            options={{
+                                maskType: 'BRL',
+                                withDDD: true,
+                                dddMask: '(99) '
+                            }}
+                            value={tel}
+                            placeholder={'(44) 99999-5555'}
+                            autoCompleteType={'tel'}
+                            onChangeText={text => setTel(text) }
+                            keyboardType={"decimal-pad"}
+                            onSubmitEditing={() => textInputCep.focus()}
+                        />
+                    </View>
+                </View>
                 <View style={styles.adress1}>
                     <View style={styles.adress2}>
                         <Text style={styles.adressText}>CEP: </Text>
                         <View style={{...styles.adressInputContainer, width: '80%'}}>
                             <TextInputMask 
+                                refInput={(ref) => textInputCep = ref}
                                 style={styles.adressInputTop}
-                                autoFocus={true}
                                 type={'zip-code'}
                                 placeholder={"00000-000"}
                                 value={cep}
@@ -126,7 +161,6 @@ const Delivery = ({dispatch, navigation, end}) => {
                                     textInputComp.focus();
                                     setLocationcNum(e);
                                 }}
-                                onlogradouroEditing={() => setLocationcNum()}
 
                             ></TextInput>
                         </View>
@@ -140,7 +174,7 @@ const Delivery = ({dispatch, navigation, end}) => {
                         value={comp}
                         onChangeText={e => setComp(e)}
                         ref={ r => textInputComp = r}
-                        onSubmitEditing={() => textInputTel.focus()}
+                        onSubmitEditing={() => Keyboard.dismiss()}
                         ></TextInput>
                     </View>
                 </View>
@@ -167,39 +201,8 @@ const Delivery = ({dispatch, navigation, end}) => {
                         ></TextInput>
                     </View>
                 </View>
-                <View style={{...styles.adress1}}>
-                    <Text style={styles.adressText}>Telefone: </Text>
-                    <View style={{...styles.adressInputContainer, width: '67%'}}>
-                        <TextInputMask
-                            refInput={(ref) => textInputTel = ref}
-                            style={styles.adressInput}
-                            type={'cel-phone'}
-                            options={{
-                                maskType: 'BRL',
-                                withDDD: true,
-                                dddMask: '(99) '
-                            }}
-                            value={tel}
-                            placeholder={'(44) 99999-5555'}
-                            autoCompleteType={'tel'}
-                            onChangeText={text => setTel(text) }
-                            keyboardType={"decimal-pad"}
-                            onSubmitEditing={() => textInputNome.focus()}
-                        />
-                    </View>
-                </View>
-                <View style={{...styles.adress1}}>
-                    <Text style={styles.adressText}>Nome: </Text>
-                    <View style={{...styles.adressInputContainer, width: '80%'}}>
-                        <TextInput 
-                        style={styles.adressInput}
-                        value={nome}
-                        onChangeText={e => setNome(e)}
-                        ref={r => textInputNome = r}
-                        onSubmitEditing={() => Keyboard.dismiss()}
-                        ></TextInput>
-                    </View>
-                </View>
+                
+                
                 
             </View>
             <View style={styles.botContainer}>

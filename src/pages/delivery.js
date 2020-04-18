@@ -62,8 +62,8 @@ const Delivery = ({dispatch, navigation, end}) => {
     }
     };
 
-    const setLocationcCEP = async ( ) => {
-        const result = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${e}&key=AIzaSyAi9booFyLB2mFsIHKMcYNonudrSx4Fp-4&callback=initMap`); 
+    const setLocationcCEP = async (cep) => {
+        const result = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${cep}&key=${Env.GEOCODE_KEY}&callback=initMap`); 
         const jsonResult = await result.json();
         setCurrentRegion({  latitude: jsonResult.results[0].geometry.location.lat,
                             longitude: jsonResult.results[0].geometry.location.lng,
@@ -77,7 +77,7 @@ const Delivery = ({dispatch, navigation, end}) => {
     }
 
     const setLocationcNum = async () => {
-        const result = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${num}+${logradouro}&key=AIzaSyAi9booFyLB2mFsIHKMcYNonudrSx4Fp-4&callback=initMap`);
+        const result = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${num}+${logradouro}&key=${Env.GEOCODE_KEY}&callback=initMap`);
         const jsonResult = await result.json();
 
         setCurrentRegion({  latitude: jsonResult.results[0].geometry.location.lat,

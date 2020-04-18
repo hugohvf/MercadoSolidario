@@ -6,6 +6,8 @@ import MapView, { Marker } from 'react-native-maps';
 import { connect } from 'react-redux';
 import { TextInputMask } from 'react-native-masked-text'
 
+var Env = require('../environment/environment.js')
+
 const Delivery = ({dispatch, navigation, end}) => {
     const [currentRegion, setCurrentRegion] = useState({
                                                         latitude: -23.4118685,
@@ -60,7 +62,7 @@ const Delivery = ({dispatch, navigation, end}) => {
     }
     };
 
-    const setLocationcCEP = async (e) => {
+    const setLocationcCEP = async ( ) => {
         const result = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${e}&key=AIzaSyAi9booFyLB2mFsIHKMcYNonudrSx4Fp-4&callback=initMap`); 
         const jsonResult = await result.json();
         setCurrentRegion({  latitude: jsonResult.results[0].geometry.location.lat,

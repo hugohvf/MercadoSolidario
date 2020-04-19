@@ -2,15 +2,16 @@ import React, { useState } from 'react'
 import { View, Text, TouchableOpacity, TextInput, Keyboard } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-
 import styles from '../styles/main';
+import Colors from '../styles/colors';
+
 
 const Main = ({ navigation }) => {
 
   return (
-    <View styles={styles.backgroundContainer}>
+    <View style={styles.backgroundContainer}>
       <LinearGradient
-          colors={['rgba(0,0,0,0.8)', 'transparent']}
+          colors={[Colors.secundary, Colors.primary]}
           style={{
             position: 'absolute',
             left: 0,
@@ -19,10 +20,11 @@ const Main = ({ navigation }) => {
           }}
         >
       <TouchableOpacity style={styles.container} onPress={() => navigation.replace('Orders')}>
-        <Text>Ajudar</Text>
+        <Text style={styles.text}>Ajudar</Text>
       </TouchableOpacity>
+      <View style={styles.separator}></View>
       <TouchableOpacity style={styles.container} onPress={() => navigation.replace('List')}>
-        <Text>Fazer um pedido</Text>
+        <Text style={styles.text}>Fazer um pedido</Text>
       </TouchableOpacity>
       </LinearGradient>
     </View>
